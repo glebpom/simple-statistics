@@ -1,6 +1,6 @@
 = simple-statistics
 
-Description goes here.
+Ruby gem with basic functionality to gather and work with statistics
 
 == Note on Patches/Pull Requests
  
