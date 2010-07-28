@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{simple-statistics}
-  s.version = "0.0.0"
+  s.version = "0.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Gleb Pomykalov"]
@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
      "lib/simple_statistics/autoload.rb",
      "lib/simple_statistics/data.rb",
      "lib/simple_statistics/data_set.rb",
+     "simple-statistics.gemspec",
      "spec/data_set_spec.rb",
      "spec/data_spec.rb",
      "spec/sample_spec.rb",
