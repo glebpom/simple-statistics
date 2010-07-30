@@ -8,16 +8,18 @@ describe SimpleStatistics::Data do
     
     it "should accept probes with #add_probe" do
       lambda {
+        @data.tick(:default)
         @data.add_probe(:default, 1)
       }.should_not raise_error
     end
-    
+
     describe "accessed with proxy" do
       describe "with some probes" do
         before :each do
           @now = Time.now
           100.times do |i|
             Timecop.freeze(@now+i)
+            @data.tick(:default)
             @data[:default].add_probe(i)
           end
           Timecop.return
@@ -51,6 +53,7 @@ describe SimpleStatistics::Data do
           @now = Time.now
           100.times do |i|
             Timecop.freeze(@now+i)
+            @data.tick(:default)
             @data.add_probe(:default, i)
           end
           Timecop.return
@@ -76,21 +79,6 @@ describe SimpleStatistics::Data do
           end
         end
       end
-    end
-
-    describe "searching" do
-      before :each do
-        @now = Time.now
-        10.times do |i|
-          Timecop.freeze(@now+i)
-          @data[:process1].add_probe(10)
-          @data[:process1].add_probe(20)
-          @data[:process1].add_probe(15)
-        end
-        Timecop.return
-      end
-      #processes.where(:private_mem).mean.last_probes_by_count(10.probes).is_higher_then(100_000_000) do |process|
-      
     end
   end
 end

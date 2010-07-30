@@ -4,12 +4,14 @@ describe SimpleStatistics::DataSet do
   describe "searching" do
     before :each do
       @data_set = SimpleStatistics::DataSet.new
+      {:process1 => 10, :process2 => 20, :process3 => 15}.each do |process, mem|
+        @data_set.add_data(process)
+      end
+      @now = Time.now
       10.times do |i|
-        @now = Time.now
+        Timecop.freeze(@now+i)
+        @data_set.tick(:private_mem)
         {:process1 => 10, :process2 => 20, :process3 => 15}.each do |process, mem|
-          Timecop.freeze(@now+i)
-          @data_set[process][:private_mem].add_probe(mem)
-          @data_set[process][:private_mem].add_probe(mem)
           @data_set[process][:private_mem].add_probe(mem)
         end
         Timecop.return

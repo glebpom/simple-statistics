@@ -8,11 +8,19 @@ module SimpleStatistics
       end
     
       def full?
-        not data.any? { |s| s.nil? }
+        not @data.any? { |s| s.nil? }
       end
     
       def mean
         sum.to_f/count
+      end
+      
+      def max
+        @data.max
+      end
+      
+      def min
+        @data.min
       end
     
       def count
@@ -44,32 +52,39 @@ module SimpleStatistics
       @probes[key.to_sym] ||= []
       DataProxy.new(self, key.to_sym)
     end
+    
+    def tick(key)
+      current_time = Time.now
+      @current_tick[key.to_sym] = current_time
+      @probes[key.to_sym] ||= {}
+      @probes[key.to_sym][current_time] = nil
+    end
 
     def initialize(keep_probes = 20)
       @probes = {}
       @keep_probes = keep_probes
+      @current_tick = {}
     end
     
     def add_probe(key, value)
       @probes ||= {}
       @probes[key.to_sym] ||= []
-      @probes[key.to_sym] << [value, Time.now]
-      if @keep_probes.to_i > 0 and @probes[key.to_sym].size > @keep_probes
-        @probes[key.to_sym].shift
+      if !@current_tick || !@current_tick[key.to_sym]
+        raise "You should call #tick first"
       end
+      @probes[key.to_sym][@current_tick[key.to_sym]] = value
+#      if @keep_probes.to_i > 0 and @probes[key.to_sym].size > @keep_probes
+ #       @probes[key.to_sym].shift
+#      end
     end
   
     def last_probes_by_count(key, num)
-      result = @probes[key.to_sym][-num..-1] || []
-      Sample.new(result.map { |p| p[0] })
+      result = @probes[key.to_sym].to_a.sort_by { |k| k[0] }.map{|k| k[1]}[-num..-1] || []
+      Sample.new(result)
     end
   
     def last_probes_by_time(key, time)
-      result = []
-      @probes[key.to_sym].reverse_each do |p|
-        break if p[1] < time
-        result.unshift(p[0]) 
-      end
+      result = @probes[key.to_sym].to_a.sort_by { |k| k[0] }.reject{|k| k[0] < time}.map { |k| k[1]} || []
       Sample.new(result)
     end  
   end

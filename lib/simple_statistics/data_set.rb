@@ -1,6 +1,5 @@
 module SimpleStatistics
   class DataSet
-    
     class DataFinder
       class DataFinderError < StandardError; end
       
@@ -15,9 +14,11 @@ module SimpleStatistics
         self
       end
       
-      def mean
-        @aggregate = :mean
-        self
+      SimpleStatistics::AGGREGATE_FUNCTIONS.each do |aggregate|
+        define_method aggregate do
+          @aggregate = aggregate.to_sym
+          self
+        end
       end
       
       def last_probes_by_count(count)
@@ -40,7 +41,7 @@ module SimpleStatistics
           else
             raise DataFinderError, "Sample is not defined. Use :last_probes_by_count or :last_probes_by_time"
           end
-          if [:mean, :count, :sum].include?(@aggregate.to_sym)
+          if AGGREGATE_FUNCTIONS.include?(@aggregate.to_sym)
             p = p.send(@aggregate)
           else
             raise DataFinderError, "Aggregate function is not define. User one of :mean, :count, :sum"
@@ -62,6 +63,16 @@ module SimpleStatistics
     
     def where(probe)
       DataFinder.new(probe, self)
+    end
+    
+    def tick(key)
+      @datas.each do |k, data|
+        data.tick(key)
+      end
+    end
+    
+    def add_data(key)
+      self[key]
     end
     
     attr_reader :datas

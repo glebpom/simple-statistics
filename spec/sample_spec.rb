@@ -6,6 +6,7 @@ describe SimpleStatistics::Data::Sample do
     @now = Time.now
     1.upto(3) do |i|
       Timecop.freeze(@now+i)
+      @statistics.tick(:default)
       @statistics[:default].add_probe(i)
     end
     Timecop.return
