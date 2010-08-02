@@ -49,7 +49,7 @@ module SimpleStatistics
     
     def [](key)
       @probes ||= {}
-      @probes[key.to_sym] ||= []
+      @probes[key.to_sym] ||= {}
       DataProxy.new(self, key.to_sym)
     end
     
@@ -68,14 +68,16 @@ module SimpleStatistics
     
     def add_probe(key, value)
       @probes ||= {}
-      @probes[key.to_sym] ||= []
+      @probes[key.to_sym] ||= {}
       if !@current_tick || !@current_tick[key.to_sym]
         raise "You should call #tick first"
       end
       @probes[key.to_sym][@current_tick[key.to_sym]] = value
-#      if @keep_probes.to_i > 0 and @probes[key.to_sym].size > @keep_probes
- #       @probes[key.to_sym].shift
-#      end
+      Daemonizer.logger.info "Probes size for #{key} is #{@probes[key.to_sym].size}"
+      if @keep_probes.to_i > 0 and @probes[key.to_sym].size > @keep_probes
+        min = @probes[key.to_sym].keys.min
+        @probes[key.to_sym].delete_if { |k,v| k ==  min }
+      end
     end
   
     def last_probes_by_count(key, num)
