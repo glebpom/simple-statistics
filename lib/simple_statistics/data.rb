@@ -73,7 +73,6 @@ module SimpleStatistics
         raise "You should call #tick first"
       end
       @probes[key.to_sym][@current_tick[key.to_sym]] = value
-      Daemonizer.logger.info "Probes size for #{key} is #{@probes[key.to_sym].size}"
       if @keep_probes.to_i > 0 and @probes[key.to_sym].size > @keep_probes
         min = @probes[key.to_sym].keys.min
         @probes[key.to_sym].delete_if { |k,v| k ==  min }
