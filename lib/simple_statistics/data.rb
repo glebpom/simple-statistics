@@ -79,6 +79,11 @@ module SimpleStatistics
       end
     end
   
+    def reset(key)
+      @probes ||= {}
+      @probes[key.to_sym] = {}
+    end  
+  
     def last_probes_by_count(key, num)
       result = @probes[key.to_sym].to_a.sort_by { |k| k[0] }.map{|k| k[1]}[-num..-1] || []
       Sample.new(result)
