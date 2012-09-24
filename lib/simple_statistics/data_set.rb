@@ -47,8 +47,14 @@ module SimpleStatistics
             raise DataFinderError, "Aggregate function is not define. User one of :mean, :count, :sum"
           end
           if @is_higher_then
-            if p > @is_higher_then 
-              block.call(key)
+            if p.class.name == "Array"
+              p.each do |p_aux| 
+                block.call(key) if p_aux > @is_higher_then
+              end
+            elsif
+              if p > @is_higher_then 
+                block.call(key)
+              end
             end
           else
             raise DataFinderError, "Condition is not defined. Use :is_higher_then"

@@ -30,6 +30,18 @@ module SimpleStatistics
       def sum
         @data.compact.inject(0) { |r,v| r=r+v }
       end
+
+      def mode
+        counts = Hash.new(0)
+        @data.each { |i| counts[i] += 1 } 
+        counts = counts.sort {|a, b| b[1] <=> a[1]}
+        frequency = counts.first[1]
+        counts = counts.select {|a| a[1] == frequency }
+        _mode = []
+        counts.each {|c| _mode << c[0]}
+        return nil if _mode == @data
+        _mode
+      end
     end
     
     class DataProxy
@@ -93,5 +105,6 @@ module SimpleStatistics
       result = @probes[key.to_sym].to_a.sort_by { |k| k[0] }.reject{|k| k[0] < time}.map { |k| k[1]} || []
       Sample.new(result)
     end  
+
   end
 end

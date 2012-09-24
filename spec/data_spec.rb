@@ -37,7 +37,7 @@ describe SimpleStatistics::Data do
 
         describe "on call #last_probes_by_time with Time.now - 10.seconds probes" do
           before :each do
-            @sample = @data[:default].last_probes_by_time(@now + 100 - 10)
+            @sample = @data[:default].last_probes_by_time(@now + 100 - 11)
           end
         
           it "should return Sample with correct data" do

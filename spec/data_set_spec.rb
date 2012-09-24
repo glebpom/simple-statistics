@@ -25,6 +25,14 @@ describe SimpleStatistics::DataSet do
       end
       @result.should == [:process2, :process3]
     end
+
+    it "should find corret values with mode" do
+      @result = []
+      @data_set.where(:private_mem).mode.last_probes_by_count(10).is_higher_then(14) do |process|
+        @result << process.to_sym
+      end
+      @result.should == [:process2, :process3]
+    end
     
   end
 end
